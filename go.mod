@@ -5,6 +5,7 @@ go 1.26.2
 require (
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/google/uuid v1.6.0 // indirect
+	github.com/joho/godotenv v1.5.1 // indirect
 	github.com/mattn/go-isatty v0.0.24 // indirect
 	github.com/mattn/go-sqlite3 v1.14.50 // indirect
 	github.com/ncruces/go-strftime v1.0.0 // indirect
