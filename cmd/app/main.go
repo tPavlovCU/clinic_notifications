@@ -12,5 +12,5 @@ func main() {
 		log.Fatalf("критическая ошибка при чтении файла env, %v", err)
 	}
 
-	fmt.Println(cfg)
+	fmt.Println(cfg, "smt")
 }
