@@ -2,7 +2,8 @@ package main
 
 import (
 	"clinic-notifications/internal/config"
-	"fmt"
+	"clinic-notifications/internal/database"
+	"clinic-notifications/internal/queue"
 	"log"
 )
 
@@ -12,5 +13,16 @@ func main() {
 		log.Fatalf("критическая ошибка при чтении файла env, %v", err)
 	}
 
-	fmt.Println(cfg)
+	db, err := database.InitDB(cfg.DBPath)
+	if err != nil {
+		log.Fatalf("Критическая ошибка при инициализации базы данных, %v", err)
+	}
+	defer db.Close()
+
+	queue, err := queue.InitRedis(cfg.RedisAddr)
+	if err != nil {
+		log.Fatalf("Критическая ошибка при инициализации Redis, %v", err)
+	}
+	defer queue.Close()
+
 }
