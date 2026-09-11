@@ -2,11 +2,11 @@ package database
 
 import (
 	"database/sql"
-	_ "modernc.org/sqlite"
 	"fmt"
+	_ "modernc.org/sqlite"
 	"os"
+	"time"
 )
-
 
 func InitDB(dbPath string) (*sql.DB, error) {
 	db, err := sql.Open("sqlite", dbPath)
@@ -24,9 +24,13 @@ func InitDB(dbPath string) (*sql.DB, error) {
 	}
 
 	_, err = db.Exec(string(migrationSql))
-	
+
 	if err != nil {
-		return nil, fmt.Errorf("не удалось выполнить миграцию: %w", err)
+		return nil, fmt.Errorf("не удалось выполнить миграцию: %w", err, string(migrationSql))
 	}
+
+	db.SetMaxOpenConns(1)
+	db.SetMaxIdleConns(1)
+	db.SetConnMaxIdleTime(5 * time.Minute)
 	return db, nil
 }
