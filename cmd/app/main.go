@@ -3,11 +3,13 @@ package main
 import (
 	"clinic-notifications/internal/config"
 	"clinic-notifications/internal/database"
-	"clinic-notifications/internal/queue"
+	//"clinic-notifications/internal/queue"
 	"clinic-notifications/internal/repository"
 	"context"
 	"fmt"
 	"log"
+	"net/http"
+	"time"
 )
 
 var ctx context.Context = context.Background()
@@ -26,15 +28,21 @@ func main() {
 	defer db.Close()
 	fmt.Println("db created")
 
-	queue, err := queue.InitRedis(cfg.RedisAddr)
-	if err != nil {
-		log.Fatalf("Критическая ошибка при инициализации Redis, %v", err)
-	}
-	defer queue.Close()
+	// queue, err := queue.InitRedis(cfg.RedisAddr)
+	// if err != nil {
+	// 	log.Fatalf("Критическая ошибка при инициализации Redis, %v", err)
+	// }
+	// defer queue.Close()
 	fmt.Println("redis created")
 	repo := repository.NewSQLiteRepository(db)
 	fmt.Println("repo created")
 	repo.SaveLog(ctx, "testAppointmentID", "testPhone", "testTriggerType", "testStatus")
 	fmt.Println("log saved")
 	fmt.Println(repo.IsAleradySent(ctx, "testAppointmentID", "testTriggerType"))
+
+	customHTTPClient := &http.Client{
+		Timeout: time.Second * 5,
+	}
+	tgProvider := repository.InitTelegramProvider(cfg.TelegramBotToken, customHTTPClient)
+	fmt.Println(tgProvider.SendMessage(ctx, "123", "123"))
 }
