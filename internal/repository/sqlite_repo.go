@@ -15,7 +15,7 @@ func NewSQLiteRepository(db *sql.DB) *SQLRepo {
 	return rep
 }
 
-func (r *SQLRepo) IsAleradySent(ctx context.Context, appointmentId, triggerType string) (bool, error) {
+func (r *SQLRepo) IsAlreadySent(ctx context.Context, appointmentId, triggerType string) (bool, error) {
 	queue := "SELECT COUNT(*) FROM logs WHERE appointment_id = ? AND trigger_type = ?" //может сюда стоит добавить еще STATUS = success? типо что сообщение отправленое успешно
 	result := r.db.QueryRowContext(ctx, queue, appointmentId, triggerType)
 
