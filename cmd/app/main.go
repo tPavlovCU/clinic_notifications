@@ -8,6 +8,8 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"net/http"
+	"time"
 )
 
 var ctx context.Context = context.Background()
@@ -37,4 +39,8 @@ func main() {
 	repo.SaveLog(ctx, "testAppointmentID", "testPhone", "testTriggerType", "testStatus")
 	fmt.Println("log saved")
 	fmt.Println(repo.IsAleradySent(ctx, "testAppointmentID", "testTriggerType"))
+
+	customHTTPClient := &http.Client{
+		Timeout: time.Second * 5,
+	}
 }
