@@ -37,9 +37,42 @@ func main() {
 	customHTTPClient := &http.Client{
 		Timeout: time.Second * 5,
 	}
-	tgProvider := repository.InitTelegramProvider(cfg.TelegramBotToken, customHTTPClient)
-	serviceTG := domain.NewNotificationService(repo, tgProvider)
-	err = serviceTG.HandleBooking(ctx, "appt_999", "79991112233", "Иван", "фейковый_chat_id")
+
+	// .............................TELEGRAM PART
+	// tgProvider := repository.InitTelegramProvider(cfg.TelegramBotToken, customHTTPClient)
+	// serviceTG := domain.NewNotificationService(repo, tgProvider)
+	// err = serviceTG.HandleBooking(ctx, "appt_999", "79991112233", "Иван", "фейковый_chat_id")
+
+	// yclients := repository.NewClientAPI(cfg.YclientsToken)
+
+	// ticker := time.NewTicker(10 * time.Second)
+	// defer ticker.Stop()
+	// fmt.Println("Сервис полностью запущен и ожидает новые записи...")
+	// for range ticker.C {
+	// 	appointments, err := yclients.GetRecentAppointments(ctx)
+	// 	if err != nil {
+	// 		log.Println("Ошибка при получении данных")
+	// 	}
+	// 	for _, appt := range appointments {
+	// 		idStr := strconv.Itoa(appt.ID)
+
+	// 		err := serviceTG.HandleBooking(ctx, idStr, appt.Client.Phone, appt.Client.Name, "тестовый_chat_id")
+	// 		if err != nil {
+	// 			log.Println("Ошибка в booking")
+	// 		}
+
+	// 	}
+	// }
+
+	// .............................WHATSAPP PART
+	waProvider := repository.InitWhatsAppProvider(
+		cfg.GreenApiHost,
+		cfg.GreenApiIDInstance,
+		cfg.GreenApiToken,
+		customHTTPClient,
+	)
+
+	serviceWA := domain.NewNotificationService(repo, waProvider)
 
 	yclients := repository.NewClientAPI(cfg.YclientsToken)
 
@@ -54,11 +87,11 @@ func main() {
 		for _, appt := range appointments {
 			idStr := strconv.Itoa(appt.ID)
 
-			err := serviceTG.HandleBooking(ctx, idStr, appt.Client.Phone, appt.Client.Name, "тестовый_chat_id")
+		
+			err := serviceWA.HandleBooking(ctx, idStr, appt.Client.Phone, appt.Client.Name, appt.Client.Phone)
 			if err != nil {
-				log.Println("Ошибка в booking")
+				log.Printf("Ошибка при отправке в WhatsApp для записи %s: %v\n", idStr, err)
 			}
-
 		}
 	}
 }
