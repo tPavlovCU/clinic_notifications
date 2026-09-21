@@ -1,5 +1,6 @@
 package main
 
+//main file
 import (
 	"clinic-notifications/internal/config"
 	"clinic-notifications/internal/database"
