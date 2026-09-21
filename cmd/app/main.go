@@ -49,16 +49,16 @@ func main() {
 	for range ticker.C {
 		appointments, err := yclients.GetRecentAppointments(ctx)
 		if err != nil {
-			log.Println("Ошибка при получении данных")
+			log.Println("Ошибка при получении данных", err)
 		}
 		for _, appt := range appointments {
 			idStr := strconv.Itoa(appt.ID)
 
 			err := serviceTG.HandleBooking(ctx, idStr, appt.Client.Phone, appt.Client.Name, "тестовый_chat_id")
 			if err != nil {
-				log.Println("Ошибка в booking")
+				log.Println("Ошибка в booking", err)
 			}
-
+			fmt.Println("all ok", err)
 		}
 	}
 }
