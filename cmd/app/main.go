@@ -82,7 +82,7 @@ func main() {
 	for range ticker.C {
 		appointments, err := yclients.GetRecentAppointments(ctx)
 		if err != nil {
-			log.Println("Ошибка при получении данных")
+			log.Println("Ошибка при получении данных", err)
 		}
 		for _, appt := range appointments {
 			idStr := strconv.Itoa(appt.ID)
@@ -90,8 +90,12 @@ func main() {
 		
 			err := serviceWA.HandleBooking(ctx, idStr, appt.Client.Phone, appt.Client.Name, appt.Client.Phone)
 			if err != nil {
-				log.Printf("Ошибка при отправке в WhatsApp для записи %s: %v\n", idStr, err)
+				log.Println("Ошибка в booking", err)
 			}
+			fmt.Println("all ok", err)
+//				log.Printf("Ошибка при отправке в WhatsApp для записи %s: %v\n", idStr, err)
+			}
+
 		}
 	}
 }
