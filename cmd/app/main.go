@@ -87,15 +87,12 @@ func main() {
 		for _, appt := range appointments {
 			idStr := strconv.Itoa(appt.ID)
 
-		
 			err := serviceWA.HandleBooking(ctx, idStr, appt.Client.Phone, appt.Client.Name, appt.Client.Phone)
 			if err != nil {
 				log.Println("Ошибка в booking", err)
 			}
 			fmt.Println("all ok", err)
-//				log.Printf("Ошибка при отправке в WhatsApp для записи %s: %v\n", idStr, err)
-			}
-
+			log.Printf("Ошибка при отправке в WhatsApp для записи %s: %v\n", idStr, err)
 		}
 	}
 }
